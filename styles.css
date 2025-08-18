@@ -1,0 +1,159 @@
+/*
+ * filename: /home/al/projects/audio-player/static/styles.css
+ *
+ * v2.1: The complete, final, and consistent stylesheet.
+ */
+
+/* --- General Body and Layout --- */
+body {
+    font-family: sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container, .main-container {
+    max-width: 1200px;
+    margin: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h1, h2, h3, h4 {
+    color: #005a9c;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+}
+
+/* --- Form Elements --- */
+select {
+    font-size: 1.1em;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-bottom: 10px; /* Add some space below selectors */
+}
+
+/* --- Item Lists (from index.html) --- */
+#item-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#item-list a {
+    color: #007bff;
+    text-decoration: none;
+    display: block;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s ease-in-out;
+}
+
+#item-list a:hover {
+    background-color: #f8f9fa;
+}
+
+/* --- Player Layouts (from player.html) --- */
+audio {
+    width: 100%;
+    margin-top: 20px;
+}
+
+#audiobook-player-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+#pdf-panel {
+    flex: 2;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+#player-panel {
+    flex: 1;
+}
+
+#music-player-container {
+    text-align: center;
+}
+
+iframe {
+    border: 1px solid #ddd;
+}
+
+.nav-link {
+    margin-bottom: 20px;
+}
+
+.nav-link a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* --- Resume Section --- */
+.resume-section {
+    background-color: #e9f5ff;
+    border: 1px solid #b3d7ff;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* --- Home Page Button --- */
+.home-button-container {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+/* --- RESPONSIVE DESIGN FOR PHONES/TABLETS --- */
+@media (max-width: 800px) {
+    body {
+        padding: 10px;
+    }
+
+    .container, .main-container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    #audiobook-player-container {
+        /* On small screens, stack the panels vertically */
+        flex-direction: column;
+    }
+}

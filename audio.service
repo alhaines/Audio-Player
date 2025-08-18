@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunicorn instance to serve the Audio Player Flask app
+After=network.target
+
+[Service]
+User=al
+Group=al
+WorkingDirectory=/home/$USER/projects/audio-player
+Environment="PATH=/home/$USER/miniconda3/envs/py/bin"
+ExecStart=/home/$USER/miniconda3/envs/py/bin/gunicorn --workers 3 --bind 0.0.0.0:5053 app:app
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

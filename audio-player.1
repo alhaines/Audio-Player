@@ -1,0 +1,47 @@
+groff
+." audio-player.1 - Manual page for the Long-Form Audio Player
+."
+." Copyright 2025 AL Haines
+."
+.TH audio-player 1 "August 2025" "audio-player v1.0" "User Commands"
+
+.SH NAME
+audio-player \- A self-hosted web application for browsing and playing audiobooks and other long-form audio.
+
+.SH DESCRIPTION
+.B audio-player
+is a Flask and Gunicorn based web application that serves an audio library from a MySQL/MariaDB database. It is designed to be run as a systemd service.
+
+The application features a folder-based browsing interface, automatically saves and resumes playback position, and supports continuous playback of tracks within an album.
+
+.SH INSTALLATION
+This application is installed manually.
+
+.TP
+.B 1. Deploy Files
+Copy the project directory (e.g., \fI/home/al/projects/audio-player\fP) to the server.
+
+.TP
+.B 2. Install Dependencies
+Install the required Python packages: \fBFlask\fP, \fBPyMySQL\fP, and \fBGunicorn\fP.
+.br
+.I pip install Flask PyMySQL gunicorn
+
+.TP
+.B 3. Configure and Populate Database
+Edit \fIconfig_audio.py\fP with database credentials. Run the necessary SQL scripts to create and populate the tables.
+
+.TP
+.B 4. Install and Start Service
+Copy the \fBaudio.service\fP file to \fI/etc/systemd/system/\fP. Then, enable and start the service.
+.br
+.I sudo systemctl enable audio.service
+.br
+.I sudo systemctl start audio.service
+
+.SH USAGE
+Once the service is running, the application can be accessed via a web browser at the configured IP address and port (e.g., http://<server_ip>:5053).
+
+.SH AUTHOR
+Written by AL Haines.
+

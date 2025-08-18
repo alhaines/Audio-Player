@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Long-Form Audio Browser</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Audio Library</h1>
+        <p class="home-button-container"><a href="https://alhainesusa.tech/cgi-bin/index.py" class="button">Home Page</a></p>
+        <hr>
+
+        <div id="resume-container">
+            <h2>Continue Listening</h2>
+            {% if resume_items %}
+                <select id="resume-select" onchange="window.location.href=this.value;">
+                    <option value="">-- Choose where you left off --</option>
+                    {% for item in resume_items %}
+                        <option value="{{ url_for('player', table_name=item.category, item_id=item.id) }}#t={{ item.resume_position|int }}">
+                            {{ item.album }}: {{ item.title }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                <p>No recently played items.</p>
+            {% endif %}
+        </div>
+        <hr>
+
+        <h2>Browse Full Library</h2>
+        <div>
+            <label for="category-select">Select a Category:</label>
+            <select id="category-select">
+                <option value="">-- Choose a Category --</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category.replace('audio_', '').replace('_', ' ')|title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div id="album-container" style="display: none;">
+            <label for="album-select">Select a Book / Series:</label>
+            <select id="album-select"></select>
+        </div>
+        <div id="track-container" style="display: none;">
+            <label for="track-select">Select a Chapter / File:</label>
+            <select id="track-select"></select>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#category-select').change(function() {
+                const category = $(this).val();
+                $('#album-container, #track-container').hide();
+                if (category) {
+                    $.getJSON('/get_albums/' + category, function(albums) {
+                        const albumSelect = $('#album-select').empty().append('<option value="">-- Choose --</option>');
+                        $.each(albums, function(i, album) {
+                            albumSelect.append($('<option>').val(album).text(album));
+                        });
+                        $('#album-container').show();
+                    });
+                }
+            });
+            $('#album-select').change(function() {
+                const category = $('#category-select').val();
+                const album = $(this).val();
+                $('#track-container').hide();
+                if (album) {
+                    $.getJSON('/get_tracks/' + category + '/' + encodeURIComponent(album), function(tracks) {
+                        const trackSelect = $('#track-select').empty().append('<option value="">-- Choose --</option>');
+                        $.each(tracks, function(i, track) {
+                            trackSelect.append($('<option>').val(track.id).text(track.title));
+                        });
+                        $('#track-container').show();
+                    });
+                }
+            });
+            $('#track-select').change(function() {
+                const category = $('#category-select').val();
+                const trackId = $(this).val();
+                if (trackId) {
+                    window.location.href = '/play/' + category + '/' + trackId;
+                }
+            });
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) { window.location.reload(); }
+            }, false);
+        });
+    </script>
+</body>
+</html>

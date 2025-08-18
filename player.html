@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ item.album or item.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <div class="nav-link">
+            <a href="{{ url_for('index') }}">« Back to Library Browser</a>
+        </div>
+        <h1>{{ item.album or "Player" }}</h1>
+        {% if playlist %}
+            <h4>Now playing chapter {{ current_track_index + 1 }} of {{ playlist|length }}</h4>
+        {% endif %}
+        <p><strong>File:</strong> {{ item.title }}</p>
+        <div id="audio-player-container">
+            <audio controls autoplay id="audio-player">
+                <source src="{{ url_for('stream', table_name=category, item_id=item.id) }}" type="audio/mpeg">
+            </audio>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const audioPlayer = document.getElementById('audio-player');
+            const playlist = {{ playlist|tojson }};
+            const currentTrackIndex = {{ current_track_index }};
+            const category = "{{ category }}";
+            const currentItemId = {{ item.id }};
+
+            audioPlayer.addEventListener('loadedmetadata', function() {
+                if (window.location.hash && window.location.hash.startsWith('#t=')) {
+                    const startTime = parseFloat(window.location.hash.substring(3));
+                    if (!isNaN(startTime)) {
+                        this.currentTime = startTime;
+                    }
+                }
+            });
+
+            function savePosition() {
+                if (!audioPlayer.paused && audioPlayer.currentTime > 0) {
+                    $.ajax({
+                        url: "{{ url_for('update_resume', table_name=category, item_id=item.id) }}",
+                        type: 'POST',
+                        data: {
+                            position: audioPlayer.currentTime,
+                            duration: audioPlayer.duration
+                        }
+                    });
+                }
+            }
+            setInterval(savePosition, 10000);
+
+            audioPlayer.addEventListener('ended', function() {
+                $.post("{{ url_for('clear_resume', table_name=category, item_id=item.id) }}", function() {
+                    if (playlist && currentTrackIndex > -1 && currentTrackIndex < playlist.length - 1) {
+                        const nextTrack = playlist[currentTrackIndex + 1];
+                        window.location.href = '/play/' + category + '/' + nextTrack.id;
+                    } else {
+                        window.location.href = "{{ url_for('index') }}";
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
